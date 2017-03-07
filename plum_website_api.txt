@@ -1,0 +1,39 @@
+----Work In Progress----
+
+Title : Get Houses.
+URL : https://production.plum.technology/v2/getHouses
+Header Params :
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	Authorization: Basic <Base 64 Encoded "Email:Password">
+Method : GET
+Response :
+	JSON House ID Array
+		["12345678-90ab-cdef-1234-567890abcdef", "12345678-90ab-cdef-1234-567890abcdef"]
+
+Title : Get House.
+URL : https://production.plum.technology/v2/getHouse
+Header Params :
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	Authorization: Basic <Base 64 Encoded "Email:Password">
+Method : POST
+POST Params : JSON Format
+	Required:
+		{"hid": "<House ID From Get Houses"}
+Response :
+	JSON House Object
+		{
+			"rids": [
+				"12345678-90ab-cdef-1234-567890abcdef",
+				"12345678-90ab-cdef-1234-567890abcdef"
+			],
+			"location": "80918",
+			"hid": "12345678-90ab-cdef-1234-567890abcdef",
+			"latlong": {
+				"latitude_degrees_north": 38.1234567,
+				"longitude_degrees_west": 104.1234567
+			},
+			"house_access_token": "12345678-90ab-cdef-1234-567890abcdef",
+			"house_name": "Home",
+			"local_tz": -25200
+		}
+	
