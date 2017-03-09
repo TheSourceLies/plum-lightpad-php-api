@@ -3,18 +3,21 @@
 
 error_reporting(E_ALL);
 ini_set('error_reporting', E_ALL);
-
 header('Content-type: text/javascript');
-
-require_once('./plum_website_functions.php');
 require_once('./plum_lightpad_functions.php');
 
-//buildHomeConfig(); <--You need to run this once!
+foreach($lightpad_config as $lightpad_id => $lightpad_data)
+{
+	$lightpad_information = lightpad_information($lightpad_id);
+	
+	echo "Cycling Light: ".$lightpad_information['house_name']." - ".$lightpad_information['room_name']." - ".$lightpad_information['logical_load_name']."\n";
+	
+	lightpad_off($lightpad_id);
+	sleep(2);
+	lightpad_on($lightpad_id);
+}
 
-//Just some examples until I build a nice terminal / web front end.
-
-$lightpad_id = '12345678-90ab-cdef-1234-567890abcdef';
-
+/*Some Example Commands
 lightpad_off($lightpad_id);
 lightpad_on($lightpad_id);
 lightpad_glow_color($lightpad_id, 0, 255, 0, 0);
@@ -26,4 +29,5 @@ sleep(600);
 lightpad_off($lightpad_id);
 lightpad_glow_force($lightpad_id, 1, 30000, 255, 0, 0, 0);
 echo lightpad_logical_load_metrics($lightpad_id);
+*/
 ?>

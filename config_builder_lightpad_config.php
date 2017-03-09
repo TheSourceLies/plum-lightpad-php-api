@@ -1,13 +1,21 @@
-<?php
+<?PHP
+/********************************************************************************************
+Credit Where Credit Is Due
+
+This php code and documentation is based HEAVILY off of the awesome work done by mikenmat
+and would not have been possible otherwise. (Ok, maybe but with a lot of pain and suffering)
+
+This guy is probably also the reason the PIR events were added to the lightpad output stream
+by the developers, which is what I wanted most. Thanks!!
+
+mikenemat/plum-probe
+https://github.com/mikenemat/plum-probe
+********************************************************************************************/
 error_reporting(E_ALL);
 ini_set('error_reporting', E_ALL);
+require_once('./config.php');
 
-$wait_for_this_many_lightpads_to_be_found = 3;//Continue running until you find this many lightpads.  Set to a high value to run forever.
 
-$server_adapter_ip = "0.0.0.0";//IP or 0.0.0.0 to listen on all interfaces.
-$lightpad_udp_heartbeat_port = 43770;//Port the lightpads use to broadcast UDP status.  Lightpads send out a heartbeat once every ~5 minutes.
-$buffer_length = strlen("PLUM 8888 12345678-90ab-cdef-1234-567890abcdef 8443");//Set the buffer length to what we expect to receive from a lightpad.
-$lightpad_config_file = "./lightpad_config.json";//Path to output the lightpad_config.json file.
 
 if(!($sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP)))//Create UDP IPV4 socket.
 {

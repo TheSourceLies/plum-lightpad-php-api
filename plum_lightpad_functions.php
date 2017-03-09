@@ -11,23 +11,68 @@ by the developers, which is what I wanted most. Thanks!!
 mikenemat/plum-probe
 https://github.com/mikenemat/plum-probe
 ********************************************************************************************/
+error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
+require_once('./config.php');
 
 
 
-require_once('./plum_lightpad_variables.php');
+if(!$lightpad_config || !$house_config)//Check to make sure both config files have been created.
+{
+	die('You must run both the lighpad and house config builders to be able to control lightpads.');
+}
 
 
 
+/****************************************************************************
+Turns a lightpad on.
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+Returns:
+	http return code
+		204 - Command received, no content.  This is a successful request.
+		401 - Unauthorized. Incorrect house_access_token.
+****************************************************************************/
 function lightpad_off($lightpad_id)
 {
 	return lightpad_dim($lightpad_id, 0);
 }
 
+
+
+/****************************************************************************
+Turns a lightpad off.
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+Returns:
+	http return code
+		204 - Command received, no content.  This is a successful request.
+		401 - Unauthorized. Incorrect house_access_token.
+****************************************************************************/
 function lightpad_on($lightpad_id)
 {
 	return lightpad_dim($lightpad_id, 255);
 }
 
+
+
+/****************************************************************************
+Dims a lightpad to the specified level.
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+	(int 0-255) $level - The power level to dim to. 0 is off, 128 is 50% and 255 is 100%
+		Example: 100
+Returns:
+	http return code
+		204 - Command received, no content.  This is a successful request.
+		401 - Unauthorized. Incorrect house_access_token.
+****************************************************************************/
 function lightpad_dim($lightpad_id, $level = 128)
 {
 	global $lightpad_set_logical_load_level_path;
@@ -37,33 +82,115 @@ function lightpad_dim($lightpad_id, $level = 128)
 	return lightpad_web_request($lightpad['lightpad_ip'], $lightpad['lightpad_port'], $lightpad['logical_load_id'], $lightpad['house_access_token'], $command_path, $command);
 }
 
+
+
+/****************************************************************************
+Adjusts the color of the glow ring when motion is detected.
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+	(int 0-255) $white - The amount of white in the color ring.
+	(int 0-255) $red - The amount of red in the color ring.
+	(int 0-255) $green - The amount of green in the color ring.
+	(int 0-255) $blue - The amount of blue in the color ring.
+Returns:
+	http return code
+		204 - Command received, no content.  This is a successful request.
+		401 - Unauthorized. Incorrect house_access_token.
+****************************************************************************/
 function lightpad_glow_color($lightpad_id, $white = 0, $red = 255, $green = 0, $blue = 0)
 {
 	$command = ['config' => ['glowColor' => ['white' => $white, 'red' => $red, 'green' => $green, 'blue' => $blue]]];
 	return lightpad_alter_config($lightpad_id, $command);
 }
 
-//0 to 1 float.
+
+
+/****************************************************************************
+Adjusts the intensity (brightness) of the glow ring when motion is detected.
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+	(float 0-1) $intensity - How bright the color ring will glow.  0 is off, 1 is maximum brightness.
+		Example: 0.5
+Returns:
+	http return code
+		204 - Command received, no content.  This is a successful request.
+		401 - Unauthorized. Incorrect house_access_token.
+****************************************************************************/
 function lightpad_glow_intensity($lightpad_id, $intensity = 1)
 {
 	$command = ['config' => ['glowIntensity' => $intensity]];
 	return lightpad_alter_config($lightpad_id, $command);
 }
 
-//Seconds
+
+
+/****************************************************************************
+Adjusts the how long the glow ring lights up when motion is detected.
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+	(int 0-?) $timeout - Number of seconds to remain on.
+		Example: 10
+Returns:
+	http return code
+		204 - Command received, no content.  This is a successful request.
+		401 - Unauthorized. Incorrect house_access_token.
+****************************************************************************/
 function lightpad_glow_timeout($lightpad_id, $timeout = 5)
 {
 	$command = ['config' => ['glowTimeout' => $timeout]];
 	return lightpad_alter_config($lightpad_id, $command);
 }
 
-//true / false
+
+
+/****************************************************************************
+Enables / disables the glow ring lighting up when motion is detected.
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+	(boolean) $enabled - true to enable, false to disable.
+		Example: false
+Returns:
+	http return code
+		204 - Command received, no content.  This is a successful request.
+		401 - Unauthorized. Incorrect house_access_token.
+****************************************************************************/
 function lightpad_glow_enabled($lightpad_id, $enabled = true)
 {
 	$command = ['config' => ['glowEnabled' => $enabled]];
 	return lightpad_alter_config($lightpad_id, $command);
 }
 
+
+
+/****************************************************************************
+Turns the glow ring on to a specific color for a specific time.  Motion events or subsequent calls
+to this function will override this command.
+Use lightpad_glow_enabled($lightpad_id, false) to temporarily disable motion events changing the color.
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+	(float 0-1) $intensity - How bright the color ring will glow.  0 is off, 1 is maximum brightness.
+		Example: 0.5
+	(int) $timeout - milliseconds for the glow pad to remain on.
+		Example: 30000 is 30 seconds.
+	(int 0-255) $white - The amount of white in the color ring.
+	(int 0-255) $red - The amount of red in the color ring.
+	(int 0-255) $green - The amount of green in the color ring.
+	(int 0-255) $blue - The amount of blue in the color ring.
+Returns:
+	http return code
+		204 - Command received, no content.  This is a successful request.
+		401 - Unauthorized. Incorrect house_access_token.
+****************************************************************************/
 function lightpad_glow_force($lightpad_id, $intensity = 1, $timeout = 5000, $white = 0, $red = 0, $green = 0, $blue = 255)
 {
 	global $lightpad_set_logical_load_glow_path;
@@ -73,6 +200,13 @@ function lightpad_glow_force($lightpad_id, $intensity = 1, $timeout = 5000, $whi
 	return lightpad_web_request($lightpad['lightpad_ip'], $lightpad['lightpad_port'], $lightpad['logical_load_id'], $lightpad['house_access_token'], $command_path, $command);
 }
 
+
+
+/****************************************************************************
+Assistant function to others listed above, builds out the web request
+by finding the lightpad in the config and send out the logical load id and
+house access token as part of the request.
+****************************************************************************/
 function lightpad_alter_config($lightpad_id, $command)
 {
 	global $lightpad_set_logical_load_config_path;
@@ -81,6 +215,18 @@ function lightpad_alter_config($lightpad_id, $command)
 	return lightpad_web_request($lightpad['lightpad_ip'], $lightpad['lightpad_port'], $lightpad['logical_load_id'], $lightpad['house_access_token'], $command_path, $command);
 }
 
+
+
+/****************************************************************************
+Requests the current power load metrics from a logical load. (Switch or group of switches)
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+	
+Returns:
+	(json) Information of the logical loads power usage.  <--Will expand later
+****************************************************************************/
 function lightpad_logical_load_metrics($lightpad_id)
 {
 	global $lightpad_get_logical_load_metrics_path;
@@ -89,11 +235,36 @@ function lightpad_logical_load_metrics($lightpad_id)
 	return lightpad_web_request($lightpad['lightpad_ip'], $lightpad['lightpad_port'], $lightpad['logical_load_id'], $lightpad['house_access_token'], $command_path);
 }
 
+
+
+/****************************************************************************
+Reads the house_config and lightpad_configs and returns all the nescessary information
+to send a command to the switch
+
+Arguments:
+	(string) $lightpad_id - The 36 digit lightpad id from the lightpad.conf.json file.
+		Example: 12345678-90ab-cdef-1234-567890abcdef
+	
+Returns:
+	(array)
+		[
+			'house_id' => house_id,
+			'house_access_token' => house_access_token,
+			'house_name' => house_name,
+			'room_id' => room_id,
+			'room_name' => room_name,
+			'logical_load_id' => logical_load_id,
+			'logical_load_name' => logical_load_name,
+			'lightpad_id' => lightpad_id,
+			'lightpad_port' => port,
+			'lightpad_ip' => ip
+		]
+****************************************************************************/
 function lightpad_information($target_lightpad_id)
 {
-	global $home_config, $lightpad_config;
+	global $house_config, $lightpad_config;
 	
-	$houses = $home_config->houses;
+	$houses = $house_config->houses;
 	
 	foreach($houses as $house_id => $house_array)
 	{
@@ -172,18 +343,34 @@ function lightpad_web_request($lightpad_ip, $lightpad_port, $lightpad_logical_lo
 	}
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //Set the cURL return of the page to a string.
 	
-	
-	
 	// Debugging Options
 	// curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8080');
 	// curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-	curl_setopt($ch, CURLOPT_HEADER, 1);
-	curl_setopt($ch, CURLOPT_VERBOSE, 1);
+	// curl_setopt($ch, CURLOPT_HEADER, 1);
+	// curl_setopt($ch, CURLOPT_VERBOSE, 1);
 	
 	$output = curl_exec($ch); //Perform the request, $output contains the output string.
-	//print_r(curl_getinfo($ch));
+	
+	$return_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	
 	curl_close($ch); //Close cURL resource to free up system resources.
-	echo '['.$output.']';
-	return json_decode($output, true); //Use JSON decode to convert the retun from the lightpad into an array/object.  Add error checking here. ;)
+	
+	if($return_code == 401)
+	{
+		echo("Unable to authenticate with lightpad, bad username or password?");
+	}
+	elseif($return_code == 204)
+	{
+		echo "Command received by lightpad.\n";
+	}
+	
+	if(!$output)
+	{
+		return $return_code;
+	}
+	else
+	{
+		return json_decode($output, true); //Use JSON decode to convert the retun from the lightpad into an array/object.  Add error checking here. ;)
+	}
 }
 ?>

@@ -1,6 +1,26 @@
 <?PHP
-require_once('./plum_username_and_password.php');
-require_once('./plum_website_variables.php');
+/********************************************************************************************
+Credit Where Credit Is Due
+
+This php code and documentation is based HEAVILY off of the awesome work done by mikenmat
+and would not have been possible otherwise. (Ok, maybe but with a lot of pain and suffering)
+
+This guy is probably also the reason the PIR events were added to the lightpad output stream
+by the developers, which is what I wanted most. Thanks!!
+
+mikenemat/plum-probe
+https://github.com/mikenemat/plum-probe
+********************************************************************************************/
+error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
+require_once('./config.php');
+
+if(!$plum_account_email || !$plum_account_password)
+{
+	die("Please set email and password for Plum in config.php\n");
+}
+
+build_house_config();
 
 
 
@@ -9,14 +29,18 @@ Builds the home config file.
 
 Returns: N/A
 ******************************************************************/
-function build_home_config()
+function build_house_config()
 {
-	global $home_config, $home_config_file;
+	global $house_config, $house_config_file;
 	
-	$home_config = [];
-	$home_config['houses'] = [];
+	echo "Connecting to Plum and pulling house information.\n";
+	
+	$house_config = [];
+	$house_config['houses'] = [];
 	
 	$houses = get_houses();
+	
+	echo "Processing ".sizeof($houses)." house(s).\n";
 	foreach($houses as $house_key => $house_id)
 	{
 		$house = get_house($house_id);
@@ -24,9 +48,10 @@ function build_home_config()
 		$rooms = $house['rids'];
 		unset($house['rids']);
 		
-		$home_config['houses'][$house_id] = $house;
-		$home_config['houses'][$house_id]['rooms'] = [];
+		$house_config['houses'][$house_id] = $house;
+		$house_config['houses'][$house_id]['rooms'] = [];
 		
+		echo "Processing ".sizeof($rooms)." rooms(s).\n";
 		foreach($rooms as $room_key => $room_id)
 		{
 			$room = get_room($room_id);
@@ -35,9 +60,10 @@ function build_home_config()
 			$logical_loads = $room['llids'];
 			unset($room['llids']);
 			
-			$home_config['houses'][$house_id]['rooms'][$room_id] = $room;
-			$home_config['houses'][$house_id]['rooms'][$room_id]['logical_loads'] = [];
+			$house_config['houses'][$house_id]['rooms'][$room_id] = $room;
+			$house_config['houses'][$house_id]['rooms'][$room_id]['logical_loads'] = [];
 			
+			echo "Processing ".sizeof($logical_loads)." logical loads(s).\n";
 			foreach($logical_loads as $logical_load_key => $logical_load_id)
 			{
 				$logical_load = get_logical_load($logical_load_id);
@@ -46,21 +72,31 @@ function build_home_config()
 				$lightpads = $logical_load['lpids'];
 				unset($logical_load['lpids']);
 				
-				$home_config['houses'][$house_id]['rooms'][$room_id]['logical_loads'][$logical_load_id] = $logical_load;
-				$home_config['houses'][$house_id]['rooms'][$room_id]['logical_loads'][$logical_load_id]['lightpads'] = [];
+				$house_config['houses'][$house_id]['rooms'][$room_id]['logical_loads'][$logical_load_id] = $logical_load;
+				$house_config['houses'][$house_id]['rooms'][$room_id]['logical_loads'][$logical_load_id]['lightpads'] = [];
 				
+				echo "Processing ".sizeof($lightpads)." lightpads(s).\n";
 				foreach($lightpads as $lightpadKey => $lightpad_id)
 				{
 					$lightpad = get_lightpad($lightpad_id);
 					unset($lightpad['llid']);
 					unset($lightpad['lpid']);
-					$home_config['houses'][$house_id]['rooms'][$room_id]['logical_loads'][$logical_load_id]['lightpads'][$lightpad_id] = $lightpad;
+					$house_config['houses'][$house_id]['rooms'][$room_id]['logical_loads'][$logical_load_id]['lightpads'][$lightpad_id] = $lightpad;
 				}
 			}
 		}
 	}
 	
-	file_put_contents($home_config_file, json_encode($home_config, JSON_PRETTY_PRINT));
+	echo str_repeat("-", 82)."\n\n";
+	
+	if(file_put_contents($house_config_file, json_encode($house_config, JSON_PRETTY_PRINT)) === false)
+	{
+		die('Unable to write new config file, check permissions.');
+	};
+	
+	echo "New house configuration saved to [".$house_config_file."].";
+	echo "\n\n";
+	echo "Complete.\n";
 }
 
 
@@ -291,8 +327,24 @@ function plum_web_request($url, $json_post)
 	}
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header_array); //Add the headers to the cURL request.
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //Set the cURL return of the page to a string.
+	
+	// Debugging Options
+	// curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8080');
+	// curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+	// curl_setopt($ch, CURLOPT_HEADER, 1);
+	// curl_setopt($ch, CURLOPT_VERBOSE, 1);
+	
 	$output = curl_exec($ch); //Perform the request, $output contains the output string.
+	
+	$return_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	
 	curl_close($ch); //Close cURL resource to free up system resources.
+	
+	if($return_code == 401)
+	{
+		die('Unable to authenticate with Plum servers, bad username or password?');
+	}
+	
 	return json_decode($output, true); //Use JSON decode to convert the retun from plum into an array/object.  Add error checking here. ;)
 }
 ?>

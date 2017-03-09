@@ -10,6 +10,18 @@ Response :
 	JSON House ID Array
 		["12345678-90ab-cdef-1234-567890abcdef", "12345678-90ab-cdef-1234-567890abcdef"]
 
+Return Codes:
+HTTP/1.1 401 Unauthorized
+HTTP/1.1 200 OK
+	Content-Type: application/json
+	Date: Thu, 09 Mar 2017 01:30:00 GMT
+	Server: Snap/0.9.4.6
+	Content-Length: 40
+	Connection: keep-alive
+	
+
+
+	
 Title : Get House.
 URL : https://production.plum.technology/v2/getHouse
 Header Params :
