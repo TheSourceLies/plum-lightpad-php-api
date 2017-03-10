@@ -1,0 +1,275 @@
+X-Plum-House-Access-Token Header Example:
+hash("sha256", "12345678-90ab-cdef-1234-567890abcdef") = "ed043f3154c472fce8af7c1a61cca7aa1e817afd3afca8a1d215602f415accee"
+ 
+---------------------------------------------------------------------
+
+Title: Lightpad Dim
+URL: https://<Lightpad IP>:8443/v2/setLogicalLoadLevel
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	X-Plum-House-Access-Token: <sha256 House Access Token>
+	Content-Type: application/json
+HTTP Method: POST
+Post Data:
+	{
+		"level": <0-255 Power Level>,
+		"llid": "<Logical Load ID>"
+	}
+	{"llid":"<Logical Load ID>", "level":<int 0-255 - Power Level>}
+
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 204 No Content
+
+Example Request:
+	URL:
+		https://192.168.0.100:8443/v2/setLogicalLoadLevel
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		X-Plum-House-Access-Token: ed043f3154c472fce8af7c1a61cca7aa1e817afd3afca8a1d215602f415accee
+		Content-Type: application/json
+	Post Data: 
+		{
+			"level": 0,
+			"llid": "12345678-90ab-cdef-1234-567890abcdef"
+		}
+
+Example Response:
+	Response Code:
+		HTTP/1.1 204 No Content
+
+---------------------------------------------------------------------
+
+Title: Lightpad Glow Ring Color On Motion Detection
+URL: https://<Lightpad IP>:8443/v2/setLogicalLoadConfig
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	X-Plum-House-Access-Token: <sha256 House Access Token>
+	Content-Type: application/json
+HTTP Method: POST
+Post Data:
+	{
+		"config": {
+			"glowColor": {
+				"white": <int 0-255 - Amount Of White>,
+				"red": <int 0-255 - Amount Of Red>,
+				"green": <int 0-255 - Amount Of Green>,
+				"blue": <int 0-255 - Amount Of Blue>
+			}
+		},
+		"llid": "<Logical Load ID>"
+	}
+
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 204 No Content
+
+Example Request:
+	URL:
+		https://192.168.0.100:8443/v2/setLogicalLoadConfig
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		X-Plum-House-Access-Token: ed043f3154c472fce8af7c1a61cca7aa1e817afd3afca8a1d215602f415accee
+		Content-Type: application/json
+	Post Data: 
+		{
+			"config": {
+				"glowColor": {
+					"white": 64,
+					"red": 255,
+					"green": 128,
+					"blue": 0
+				}
+			},
+			"llid": "12345678-90ab-cdef-1234-567890abcdef"
+		}
+
+Example Response:
+	Response Code:
+		HTTP/1.1 204 No Content
+
+---------------------------------------------------------------------
+
+Title: Lightpad Glow Ring Timeout On Motion Detection
+URL: https://<Lightpad IP>:8443/v2/setLogicalLoadConfig
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	X-Plum-House-Access-Token: <sha256 House Access Token>
+	Content-Type: application/json
+HTTP Method: POST
+Post Data:
+	{
+		"config": {
+			"glowTimeout": <int - Seconds Until Off After Motion>
+		},
+		"llid": "<Logical Load ID>"
+	}
+
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 204 No Content
+
+Example Request:
+	URL:
+		https://192.168.0.100:8443/v2/setLogicalLoadConfig
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		X-Plum-House-Access-Token: ed043f3154c472fce8af7c1a61cca7aa1e817afd3afca8a1d215602f415accee
+		Content-Type: application/json
+	Post Data: 
+		{
+			"config": {
+				"glowTimeout": 5
+			},
+			"llid": "12345678-90ab-cdef-1234-567890abcdef"
+		}
+
+Example Response:
+	Response Code:
+		HTTP/1.1 204 No Content
+
+---------------------------------------------------------------------
+
+Title: Lightpad Glow Ring Enabled / Disabled On Motion Detection
+URL: https://<Lightpad IP>:8443/v2/setLogicalLoadConfig
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	X-Plum-House-Access-Token: <sha256 House Access Token>
+	Content-Type: application/json
+HTTP Method: POST
+Post Data:
+	{
+		"config": {
+			"glowEnabled": <boolean - true/false motion glow enabled>
+		},
+		"llid": "<Logical Load ID>"
+	}
+
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 204 No Content
+
+Example Request:
+	URL:
+		https://192.168.0.100:8443/v2/setLogicalLoadConfig
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		X-Plum-House-Access-Token: ed043f3154c472fce8af7c1a61cca7aa1e817afd3afca8a1d215602f415accee
+		Content-Type: application/json
+	Post Data: 
+		{
+			"config": {
+				"glowEnabled": true
+			},
+			"llid": "12345678-90ab-cdef-1234-567890abcdef"
+		}
+
+Example Response:
+	Response Code:
+		HTTP/1.1 204 No Content
+
+---------------------------------------------------------------------
+
+Title: Force Lightpad Glow Ring On With Color For Duration
+URL: https://<Lightpad IP>:8443/v2/setLogicalLoadGlow
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	X-Plum-House-Access-Token: <sha256 House Access Token>
+	Content-Type: application/json
+HTTP Method: POST
+Post Data:
+	{
+		"intensity": <float 0-1 - Brightness Level Of Glow Ring>,
+		"timeout": <int - Milliseconds To Remain On>,
+		"white": <int 0-255 - Amount Of White>,
+		"red": <int 0-255 - Amount Of Red>,
+		"green": <int 0-255 - Amount Of Green>,
+		"blue": <int 0-255 - Amount Of Blue>
+		"llid": "<Logical Load ID>"
+	}
+
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 204 No Content
+
+Example Request:
+	URL:
+		https://192.168.0.100:8443/v2/setLogicalLoadGlow
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		X-Plum-House-Access-Token: ed043f3154c472fce8af7c1a61cca7aa1e817afd3afca8a1d215602f415accee
+		Content-Type: application/json
+	Post Data: 
+		{
+			"intensity": 1,
+			"timeout": 30000,
+			"white": 255,
+			"red": 0,
+			"green": 0,
+			"blue": 0,
+			"llid": "12345678-90ab-cdef-1234-567890abcdef"
+		}
+
+Example Response:
+	Response Code:
+		HTTP/1.1 204 No Content
+
+---------------------------------------------------------------------
+
+Title: Get Logical Load Metrics
+URL: https://<Lightpad IP>:8443/v2/getLogicalLoadMetrics
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	X-Plum-House-Access-Token: <sha256 House Access Token>
+	Content-Type: application/json
+HTTP Method: POST
+Post Data:
+	{
+		"llid": "<Logical Load ID>"
+	}
+
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 200 OK
+Response:
+	Format: JSON String
+	Data:
+		{
+			"level": <int 0-255 - Current Power Level Of Logical Load>,
+			"lightpad_metrics": [
+				{
+					"level": <int 0-255 - Current Power Level Of Lightpad>,
+					"lpid": "<Lightpad ID>",
+					"power": <int - Current Wattage Of Lightpad>
+				}
+			],
+			"power": <int - Current Wattage Of Logical Load>
+		}
+
+Example Request:
+	URL:
+		https://192.168.0.100:8443/v2/getLogicalLoadMetrics
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		X-Plum-House-Access-Token: ed043f3154c472fce8af7c1a61cca7aa1e817afd3afca8a1d215602f415accee
+		Content-Type: application/json
+	Post Data: 
+		{
+			"llid": "12345678-90ab-cdef-1234-567890abcdef"
+		}
+
+Example Response:
+	Response Code:
+		HTTP/1.1 200 OK
+	Response Body:
+		{
+			"level": 255,
+			"lightpad_metrics": [
+				{
+					"level": 255,
+					"lpid": "12345678-90ab-cdef-1234-567890abcdef",
+					"power": 33
+				}
+			],
+			"power": 33
+		}

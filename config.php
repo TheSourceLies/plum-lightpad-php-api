@@ -46,7 +46,7 @@ else
 
 //-----------------------Lightpad Config-----------------------//
 $lightpad_agent_header = 'User-Agent';//User agent header.
-$lightpad_agentHeader_value = 'Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)'; //User agent header, based off of the phone app for plum.
+$lightpad_agent_header_value = 'Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)'; //User agent header, based off of the phone app for plum.
 $lightpad_house_access_token_header = 'X-Plum-House-Access-Token'; //House access token header.
 
 $lightpad_set_logical_load_level_path = '/v2/setLogicalLoadLevel';//Path to configure light output level.
