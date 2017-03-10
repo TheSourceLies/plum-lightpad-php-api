@@ -3,7 +3,7 @@ $plum_account_email = "nobody@email.com"; //Your plum account email address.
 
 $plum_account_password = "badPassword123"; //Your plum account password.
 
-if($plum_account_email == "nobody@email.com" || $plum_account_password = "badPassword123")
+if($plum_account_email == "nobody@email.com" || $plum_account_password == "badPassword123")
 {
 	die("You must edit config.php and change the username and pasword to YOUR Plum account information.\n");
 }

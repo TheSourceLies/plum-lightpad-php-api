@@ -1,44 +1,90 @@
-----Work In Progress----
+Authorization Header Example:
+base_64("​nobody@email.com​:badPassword123") = “bm9ib2R5QGVtYWlsLmNvbTpiYWRQYXNzd29yZDEyMw==” 
+ 
+---------------------------------------------------------------------
 
-Title : Get Houses.
-URL : https://production.plum.technology/v2/getHouses
-Header Params :
+Title: Get Houses
+URL: https://production.plum.technology/v2/getHouses
+Header Params: 
 	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
 	Authorization: Basic <Base 64 Encoded "Email:Password">
-Method : GET
-Response :
-	JSON House ID Array
-		["12345678-90ab-cdef-1234-567890abcdef", "12345678-90ab-cdef-1234-567890abcdef"]
+HTTP Method: GET
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 200 OK
+Response: 
+	Format: JSON String
+	Data: ["<House ID 1>", "<House ID 2>", ...]
 
-Return Codes:
-HTTP/1.1 401 Unauthorized
-HTTP/1.1 200 OK
-	Content-Type: application/json
-	Date: Thu, 09 Mar 2017 01:30:00 GMT
-	Server: Snap/0.9.4.6
-	Content-Length: 40
-	Connection: keep-alive
-	
+Example Request:
+	URL:
+		https://production.plum.technology/v2/getHouses
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		Authorization: Basic bm9ib2R5QGVtYWlsLmNvbTpiYWRQYXNzd29yZDEyMw==
+
+Example Response:
+	Response Code:
+		HTTP/1.1 200 OK
+	Response Body:
+		[
+			"12345678-90ab-cdef-1234-567890abcdef",
+			"12345678-90ab-cdef-1234-567890abcdef"
+		]
 
 
-	
-Title : Get House.
-URL : https://production.plum.technology/v2/getHouse
-Header Params :
+---------------------------------------------------------------------
+
+Title: Get House
+URL: https://production.plum.technology/v2/getHouse
+Header Params: 
 	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
 	Authorization: Basic <Base 64 Encoded "Email:Password">
-Method : POST
-POST Params : JSON Format
-	Required:
-		{"hid": "<House ID From Get Houses"}
-Response :
-	JSON House Object
+HTTP Method: POST
+Post Data:
+	{"hid": "<House ID>"}
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 200 OK
+Response: 
+	Format: JSON String
+	Data: 
+		{
+			"rids": [
+				"<Room ID 1>",
+				"<Room ID 2>",
+				...
+			],
+			"location": "<Home Zip Code>",
+			"hid": "<House ID>",
+			"latlong": {
+				"latitude_degrees_north": <Decimal Degrees North>,
+				"longitude_degrees_west": <Decimal Degrees West>
+			},
+			"house_access_token": "<House Access Token>",
+			"house_name": "<House Name>",
+			"local_tz": <Seconds Offset From UTC For Local Timezone>
+		}
+
+Example Request:
+	URL:
+		https://production.plum.technology/v2/getHouse
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		Authorization: Basic bm9ib2R5QGVtYWlsLmNvbTpiYWRQYXNzd29yZDEyMw==
+	Post Data: 
+		{"hid": "12345678-90ab-cdef-1234-567890abcdef"}
+
+Example Response: 
+	Response Code:
+		HTTP/1.1 200 OK
+	Response Body:
 		{
 			"rids": [
 				"12345678-90ab-cdef-1234-567890abcdef",
 				"12345678-90ab-cdef-1234-567890abcdef"
 			],
-			"location": "80918",
+			"location": "80900",
 			"hid": "12345678-90ab-cdef-1234-567890abcdef",
 			"latlong": {
 				"latitude_degrees_north": 38.1234567,
@@ -48,4 +94,218 @@ Response :
 			"house_name": "Home",
 			"local_tz": -25200
 		}
+
+---------------------------------------------------------------------	
 	
+Title: Get Room
+URL: https://production.plum.technology/v2/getRoom
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	Authorization: Basic <Base 64 Encoded "Email:Password">
+HTTP Method: POST
+Post Data:
+	{"rid": "<Room ID>"}
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 200 OK
+Response: 
+	Format: JSON String
+	Data: 
+		{
+			"rid": "<Room ID>",
+			"hid": "<House ID>",
+			"llids": [
+				"<Logical Load ID 1>",
+				"<Logical Load ID 2>",
+				...
+			],
+			"room_name": "<Room Name>"
+		}
+
+Example Request:
+	URL:
+		https://production.plum.technology/v2/getRoom
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		Authorization: Basic bm9ib2R5QGVtYWlsLmNvbTpiYWRQYXNzd29yZDEyMw==
+	Post Data: 
+		{"hid": "12345678-90ab-cdef-1234-567890abcdef"}
+
+Example Response: 
+	Response Code:
+		HTTP/1.1 200 OK
+	Response Body:
+		{
+			"rid": "12345678-90ab-cdef-1234-567890abcdef",
+			"hid": "12345678-90ab-cdef-1234-567890abcdef",
+			"llids": [
+				"12345678-90ab-cdef-1234-567890abcdef",
+				"12345678-90ab-cdef-1234-567890abcdef"
+			],
+			"room_name": "Bedroom"
+		}
+
+---------------------------------------------------------------------
+
+Title: Get Logical Load
+URL: https://production.plum.technology/v2/getLogicalLoad
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	Authorization: Basic <Base 64 Encoded "Email:Password">
+HTTP Method: POST
+Post Data:
+	{"llid": "<Logical Load ID>"}
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 200 OK
+Response: 
+	Format: JSON String
+	Data: 
+		{
+			"rid": "<Room ID>",
+			"lpids": [
+				"<Lightpad ID 1>",
+				"<Lightpad ID 2>",
+				...
+			],
+			"logical_load_name": "<Logical Load Name>",
+			"llid": "<Logical Load ID>"
+		}
+
+Example Request:
+	URL:
+		https://production.plum.technology/v2/getLogicalLoad
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		Authorization: Basic bm9ib2R5QGVtYWlsLmNvbTpiYWRQYXNzd29yZDEyMw==
+	Post Data: 
+			{"llid": "12345678-90ab-cdef-1234-567890abcdef"}
+
+Example Response: 
+	Response Code:
+		HTTP/1.1 200 OK
+	Response Body:
+		{
+			"rid": "12345678-90ab-cdef-1234-567890abcdef",
+			"lpids": [
+				"12345678-90ab-cdef-1234-567890abcdef",
+				"12345678-90ab-cdef-1234-567890abcdef"
+			],
+			"logical_load_name": "Lights",
+			"llid": "12345678-90ab-cdef-1234-567890abcdef"
+		}
+
+---------------------------------------------------------------------
+
+Title: Get Lightpad
+URL: https://production.plum.technology/v2/getLightpad
+Header Params: 
+	User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+	Authorization: Basic <Base 64 Encoded "Email:Password">
+HTTP Method: POST
+Post Data:
+	{"lpid": "<Lightpad ID>"}
+Response Codes: 
+	HTTP/1.1 401 Unauthorized
+	HTTP/1.1 200 OK
+Response: 
+	Format: JSON String
+	Data: 
+		{
+			"config": {
+				"slowFadeTime": <Milliseconds Of Slow Fade Time>,
+				"touchRate": <Float 0-1 Touch Sensitivity>,
+				"cluster": <Production or Development Cluster>,
+				"uuid": "<Universally Unique Identifier>",
+				"logRemote": false,
+				"forceGlow": <True/False Is Ring Glow Forced>,
+				"occupancyAction": <Unused>,
+				"occupancyTimeout": <Seconds Before No Occupancy>,
+				"fadeOffTime": <Milliseconds To Fade From On To Off>,
+				"glowIntensity": <Float 0-1 Brightness Of Ring Glow>,
+				"name": <Unused>,
+				"fadeOnTime": <Milliseconds To Fade From Off To On>,
+				"defaultLevel": <0-255 Default Power Level>,
+				"glowTracksDimmer": <<Glow Ring Same As Light Level>,
+				"dimEnabled": <True/False Is Dimmer Or ON/OFF Switch Only>,
+				"glowFade": <Milliseconds To Fade Off Glow Ring>,
+				"amqpEnabled": <Advanced Message Queuing Protocol>
+				"trackingSpeed": 1000,
+				"minimumLevel": <0-255 Minimul Dimmable Power Level>,
+				"versionLocked": <True/False Is Software Upgradable>,
+				"glowTimeout": <Seconds Glow Ring Remains On For Motion>,
+				"rememberLastDimLevel": <True/False Return To Last Dim Level>,
+				"serialNumber": "<Lightpad Serial Number>",
+				"pirSensitivity": <0-255 Sensitivity Of PIR.  O To ~6 Feet>,
+				"glowEnabled": <Turn On Glow Ring With PIR Detects Motion>,
+				"glowColor": {
+					"white": 0,
+					"red": 142,
+					"green": 0,
+					"blue": 255
+				},
+				"maxWattage": 420
+			},
+			"is_provisioned": <True/False Is Lightpad Provisioned To A House/Room/Logical Load>,
+			"llid": "<Logical Load ID>",
+			"custom_gestures": <Unused>,
+			"lightpad_name": "<Lightpad Name>",
+			"lpid": "<Lightpad ID>"
+		}
+
+Example Request:
+	URL:
+		https://production.plum.technology/v2/getLightpad
+	Header Params:
+		User-Agent: Plum/2.3.0 (iPhone; iOS 9.2.1; Scale/2.00)
+		Authorization: Basic bm9ib2R5QGVtYWlsLmNvbTpiYWRQYXNzd29yZDEyMw==
+	Post Data: 
+			{"lpid": "12345678-90ab-cdef-1234-567890abcdef"}
+
+Example Response: 
+	Response Code:
+		HTTP/1.1 200 OK
+	Response Body:
+		{
+			"config": {
+				"slowFadeTime": 15000,
+				"touchRate": 0.5,
+				"cluster": "production",
+				"uuid": "12345678-90ab-cdef-1234-567890abcdef",
+				"logRemote": false,
+				"forceGlow": false,
+				"occupancyAction": "undefined",
+				"occupancyTimeout": 600,
+				"fadeOffTime": 500,
+				"glowIntensity": 1,
+				"name": "",
+				"fadeOnTime": 500,
+				"defaultLevel": 128,
+				"glowTracksDimmer": false,
+				"dimEnabled": true,
+				"glowFade": 1000,
+				"amqpEnabled": true,
+				"trackingSpeed": 1000,
+				"minimumLevel": 40,
+				"versionLocked": false,
+				"glowTimeout": 5,
+				"rememberLastDimLevel": false,
+				"serialNumber": "161100000",
+				"pirSensitivity": 175,
+				"glowEnabled": true,
+				"glowColor": {
+					"white": 0,
+					"red": 142,
+					"green": 0,
+					"blue": 255
+				},
+				"maxWattage": 420
+			},
+			"is_provisioned": true,
+			"llid": "12345678-90ab-cdef-1234-567890abcdef",
+			"custom_gestures": 0,
+			"lightpad_name": "12345678-90ab-cdef-1234-567890abcdef",
+			"lpid": "12345678-90ab-cdef-1234-567890abcdef"
+		}
+
+---------------------------------------------------------------------
