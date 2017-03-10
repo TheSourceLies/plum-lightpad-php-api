@@ -12,10 +12,9 @@ Header Params:
 HTTP Method: POST
 Post Data:
 	{
-		"level": <0-255 Power Level>,
+		"level": <int 0-255 - Power Level>,
 		"llid": "<Logical Load ID>"
 	}
-	{"llid":"<Logical Load ID>", "level":<int 0-255 - Power Level>}
 
 Response Codes: 
 	HTTP/1.1 401 Unauthorized
