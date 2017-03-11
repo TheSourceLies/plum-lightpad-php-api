@@ -42,4 +42,8 @@ Getting Started:
 	correctly.
 		example
 			c:\php\php.exe cycle_all_lights.php
+	
+	Or watch the lightpad events in real time.
+		example
+			c:\php\php.exe plum_lightpad_stream.php
 *********************************************************************************************/

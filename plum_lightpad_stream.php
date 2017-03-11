@@ -18,13 +18,13 @@ function lightpad_motion($lightpad_information, $signal)//Triggered when motion 
 {
 	echo "Motion Detected: [".$lightpad_information['house_name']." - ".$lightpad_information['room_name']." - ".$lightpad_information['logical_load_name']."]\n";
 	
-	//Example
-	if($lightpad_information['logical_load_name'] == 'Downstairs' || $lightpad_information['logical_load_name'] == 'Theatre')
-	{
-		lightpad_off($lightpad_information['lightpad_id']);
-		sleep(1);
-		lightpad_on($lightpad_information['lightpad_id']);
-	}
+	//Example - If motion detected on downstairs or theatre switches, toggle the lights.
+	//if($lightpad_information['logical_load_name'] == 'Downstairs' || $lightpad_information['logical_load_name'] == 'Theatre')
+	//{
+		//lightpad_off($lightpad_information['lightpad_id']);
+		//sleep(1);
+		//lightpad_on($lightpad_information['lightpad_id']);
+	//}
 }
 
 function lightpad_dimmer($lightpad_information, $level)//Triggered when the dimmer is changed on a switch.
