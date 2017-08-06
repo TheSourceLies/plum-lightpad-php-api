@@ -61,7 +61,7 @@ $lightpad_get_logical_load_metrics_path = '/v2/getLogicalLoadMetrics';//Path to 
 
 $buffer_length = strlen("PLUM 8888 12345678-90ab-cdef-1234-567890abcdef 8443");//Set the buffer length to what we expect to receive from a lightpad.
 
-$amqp_port = 2708;
+$stream_port = 2708;
 
 //-----------------------Plum Website Config-----------------------//
 $user_agent_header = 'User-Agent';//User agent header.
